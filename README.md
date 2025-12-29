@@ -9,6 +9,7 @@ A modern, full-featured Next.js starter kit with authentication, database integr
   - Login, registration, password reset flows
   - Protected routes with client-side wrapper
   - Session management with Zustand
+  - Expo mobile app integration support
 
 - 🎨 **Modern UI Components**
   - Built with [Shadcn UI](https://ui.shadcn.com)
@@ -296,6 +297,10 @@ The project uses Tailwind CSS. Customize colors and styles in:
 - Clear `.next` folder: `rm -rf .next`
 - Reinstall dependencies: `rm -rf node_modules && npm install`
 - Check TypeScript errors: `npm run lint`
+
+## 📱 Expo Integration
+
+This starter kit includes support for Expo mobile apps! See the [Expo Setup Guide](EXPO_SETUP.md) for detailed instructions on integrating your Expo app with this backend.
 
 ## 📚 Learn More
 

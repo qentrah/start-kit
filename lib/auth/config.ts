@@ -1,6 +1,7 @@
 import { betterAuth } from "better-auth";
 import { MongoClient } from "mongodb";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
+import { expo } from "@better-auth/expo";
 
 // Ensure database connection is available
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -55,6 +56,18 @@ export const auth = betterAuth({
     enabled: true,
     requireEmailVerification: false,
   },
+  plugins: [
+    expo(), // Add Expo plugin for mobile app support
+  ],
+  trustedOrigins: [
+    "startexpokit://", // Your Expo app scheme
+    // Development mode - Expo's exp:// scheme
+    ...(process.env.NODE_ENV === "development" ? [
+      "exp://",
+      "exp://**",
+      "exp://192.168.*.*:*/**",
+    ] : [])
+  ],
   secret: process.env.BETTER_AUTH_SECRET || "change-me-in-production",
   baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
   basePath: "/api/auth",
