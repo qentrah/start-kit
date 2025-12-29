@@ -24,6 +24,24 @@ if (!global.mongoose) {
   global.mongoose = cached;
 }
 
+function getConnectionString(uri: string, dbName: string): string {
+  // Remove any existing database name from the URI
+  // MongoDB URIs format: mongodb://host:port/dbname?options
+  // or mongodb+srv://user:pass@host/dbname?options
+  
+  // Split by ? to separate options
+  const [baseUri, options] = uri.split("?");
+  
+  // Remove database name if it exists (after the last /)
+  const parts = baseUri.split("/");
+  const connectionBase = parts.slice(0, -1).join("/");
+  
+  // Build new URI with the specified database name
+  const newUri = `${connectionBase}/${dbName}${options ? `?${options}` : ""}`;
+  
+  return newUri;
+}
+
 async function connectDB(): Promise<typeof mongoose> {
   if (cached.conn) {
     return cached.conn;
@@ -32,13 +50,11 @@ async function connectDB(): Promise<typeof mongoose> {
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
+      dbName: MONGODB_DB_NAME, // Specify database name in connection options
     };
 
-    // Extract database name from URI or use the one from env
-    const uri = MONGODB_URI!;
-    const connectionString = uri.includes("/")
-      ? uri.split("/").slice(0, -1).join("/") + "/" + MONGODB_DB_NAME
-      : uri + "/" + MONGODB_DB_NAME;
+    // Build connection string with database name
+    const connectionString = getConnectionString(MONGODB_URI!, MONGODB_DB_NAME);
 
     cached.promise = mongoose.connect(connectionString, opts).then((mongoose) => {
       return mongoose;
